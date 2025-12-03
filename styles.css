@@ -310,7 +310,9 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-top: 12px; /* NEW: matches gap between game cards */
 }
+
 
 .game-card {
   background: var(--card-bg);
