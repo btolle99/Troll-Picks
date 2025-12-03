@@ -508,6 +508,88 @@ tbody tr {
   background: #123524;
   color: #fefce8;
 }
+/* ---------------------------
+   PERFORMANCE BET LOG
+---------------------------- */
+.perf-log {
+  margin-top: 20px;
+}
+
+.perf-log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.perf-log-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.perf-log-header p {
+  margin: 2px 0 0;
+  font-size: 12px;
+}
+
+.perf-log-filters {
+  display: flex;
+  gap: 8px;
+}
+
+.perf-log-filters select {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  font-size: 11px;
+  background: #ffffff;
+}
+
+.perf-log-table table {
+  font-size: 11px;
+}
+
+/* status pills in log */
+.log-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  border: 1px solid var(--border);
+}
+
+.log-status-win {
+  background: var(--hit-bg);
+  border-color: var(--hit-border);
+  color: #166534;
+}
+
+.log-status-loss {
+  background: var(--miss-bg);
+  border-color: var(--miss-border);
+  color: #b91c1c;
+}
+
+.log-status-pending {
+  background: #e0f2fe;
+  border-color: #38bdf8;
+  color: #0369a1;
+}
+
+.log-status-other {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+@media (max-width: 720px) {
+  .perf-log-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 
 /* ---------------------------
    PERFORMANCE VIEW
