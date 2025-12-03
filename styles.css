@@ -19,25 +19,37 @@
   --miss-border: #ef4444;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top, #e5f0ff 0, #f8fafc 42%, #f8fafc 100%);
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: radial-gradient(
+    circle at top,
+    #e5f0ff 0,
+    #f8fafc 42%,
+    #f8fafc 100%
+  );
   color: var(--text-main);
 }
 
-/* ---------------------------
-   LAYOUT
----------------------------- */
 .shell {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.view {
+  width: 100%;
 }
 
 /* ---------------------------
@@ -122,7 +134,7 @@ main {
 h1 {
   font-size: 28px;
   letter-spacing: -0.02em;
-  margin-bottom: 4px;
+  margin: 0 0 4px;
 }
 
 .text-muted {
@@ -137,11 +149,15 @@ h1 {
   margin-bottom: 28px;
 }
 
-.hero-subline {
-  font-size: 13px;
-  color: var(--text-muted);
+.hero-compact {
+  margin-bottom: 18px;
 }
 
+.hero-subline {
+  font-size: 13px;
+}
+
+/* KPIs */
 .kpis {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -235,7 +251,7 @@ h1 {
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 14px;
-  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.10);
+  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.1);
 }
 
 .game-header {
@@ -298,9 +314,7 @@ tbody tr {
   text-align: right;
 }
 
-/* ---------------------------
-   TAG PILLS
----------------------------- */
+/* Tag pills */
 .tag-pill {
   display: inline-block;
   padding: 2px 8px;
@@ -326,9 +340,7 @@ tbody tr {
   color: #9ca3af;
 }
 
-/* ---------------------------
-   BOOK LOGOS
----------------------------- */
+/* Book logos */
 .book-logo {
   display: inline-flex;
   align-items: center;
@@ -343,9 +355,169 @@ tbody tr {
   letter-spacing: 0.06em;
 }
 
-.book-fd      { background: #1141b8; }
-.book-dk      { background: #1a4d2e; color: #facc15; }
-.book-espn    { background: #00b489; }
-.book-mgm     { background: #1a1a1a; color: #fbbf24; }
-.book-365     { background: #006b3f; }
-.book-caesars { background: #123524; color: #fefce8; }
+.book-fd {
+  background: #1141b8;
+}
+.book-dk {
+  background: #1a4d2e;
+  color: #facc15;
+}
+.book-espn {
+  background: #00b489;
+}
+.book-mgm {
+  background: #1a1a1a;
+  color: #fbbf24;
+}
+.book-365 {
+  background: #006b3f;
+}
+.book-caesars {
+  background: #123524;
+  color: #fefce8;
+}
+
+/* ---------------------------
+   PERFORMANCE VIEW
+---------------------------- */
+.timeframe-toggle {
+  align-self: flex-start;
+}
+
+.perf-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.perf-kpi-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 18px rgba(148, 163, 184, 0.18);
+}
+
+.perf-kpi-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.perf-kpi-value {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.perf-kpi-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Layout: chart + calendar */
+.perf-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.perf-panel {
+  background: var(--card-bg);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.15);
+  padding: 12px 14px 14px;
+}
+
+.perf-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.perf-panel-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.perf-panel-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.perf-chart-wrapper {
+  width: 100%;
+  height: 200px;
+}
+
+#equityChart {
+  width: 100%;
+  height: 100%;
+}
+
+/* Calendar */
+.perf-calendar {
+  font-size: 11px;
+}
+
+.cal-row.cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-cell {
+  min-height: 46px;
+  border-radius: 12px;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #e5e7eb;
+}
+
+.cal-cell.empty {
+  background: transparent;
+}
+
+.cal-day {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cal-pnl {
+  font-size: 11px;
+}
+
+.perf-footnote {
+  margin-top: 10px;
+  font-size: 11px;
+}
+
+/* ---------------------------
+   RESPONSIVE
+---------------------------- */
+@media (max-width: 900px) {
+  .perf-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .kpis,
+  .perf-kpis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
