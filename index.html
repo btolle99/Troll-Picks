@@ -16,66 +16,133 @@
           <span class="brand-label">First Goal Engine</span>
         </a>
         <nav class="nav-links">
-          <span class="nav-link active">Today</span>
-          <span class="nav-link">Odds</span>
-          <span class="nav-link">Performance</span>
-          <span class="nav-link">About</span>
+          <span class="nav-link active" data-view="today">Today</span>
+          <span class="nav-link" data-view="odds">Odds</span>
+          <span class="nav-link" data-view="performance">Performance</span>
+          <span class="nav-link" data-view="about">About</span>
         </nav>
       </div>
     </header>
 
     <!-- MAIN CONTENT -->
     <main>
-      <!-- HERO -->
-      <section class="hero">
-        <div>
-          <h1>Today&apos;s NHL First Goal Board</h1>
-          <p class="text-muted">
-            Model-driven first goal edges across books, game by game.
-          </p>
-          <p class="text-muted hero-subline">
-            Today • <span id="today-date"></span>
-          </p>
-        </div>
+      <!-- TODAY VIEW -->
+      <section id="todayView" class="view">
+        <!-- HERO -->
+        <section class="hero">
+          <div>
+            <h1>Today&apos;s NHL First Goal Board</h1>
+            <p class="text-muted">
+              Model-driven first goal edges across books, game by game.
+            </p>
+            <p class="text-muted hero-subline">
+              Today • <span id="today-date"></span>
+            </p>
+          </div>
 
-        <div class="kpis">
-          <div class="kpi-card">
-            <div class="kpi-label">All time P/L</div>
-            <div class="kpi-value"><span id="kpi-units">+0.0u</span></div>
+          <div class="kpis">
+            <div class="kpi-card">
+              <div class="kpi-label">All time P/L</div>
+              <div class="kpi-value"><span id="kpi-units">+0.0u</span></div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Hit rate per game</div>
+              <div class="kpi-value"><span id="kpi-hit">0.0%</span></div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">ROI</div>
+              <div class="kpi-value"><span id="kpi-ev">0.0%</span></div>
+            </div>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-label">Hit rate per game</div>
-            <div class="kpi-value"><span id="kpi-hit">0.0%</span></div>
+        </section>
+
+        <!-- FILTERS -->
+        <section class="filters">
+          <div class="segmented">
+            <button id="btnPlays" class="active">Plays</button>
+            <button id="btnPlaysLeans">Plays &amp; leans</button>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-label">ROI</div>
-            <div class="kpi-value"><span id="kpi-ev">0.0%</span></div>
+
+          <div class="filter-row">
+            <span class="text-muted" style="font-size:11px;">Book</span>
+            <select class="pill-select" id="bookSelect">
+              <option value="ALL">All books</option>
+              <option value="FANDUEL">FanDuel</option>
+              <option value="DRAFTKINGS">DraftKings</option>
+              <option value="BETMGM">BetMGM</option>
+              <option value="ESPN BET">ESPN BET</option>
+              <option value="HARD ROCK BET">Hard Rock Bet</option>
+            </select>
           </div>
-        </div>
+        </section>
+
+        <!-- GAMES LIST -->
+        <section class="games-list" id="gamesList"></section>
       </section>
 
-      <!-- FILTERS -->
-      <section class="filters">
-        <div class="segmented">
-          <button id="btnPlays" class="active">Plays</button>
-          <button id="btnPlaysLeans">Plays &amp; leans</button>
-        </div>
+      <!-- PERFORMANCE VIEW -->
+      <section id="performanceView" class="view hidden">
+        <section class="hero hero-compact">
+          <div>
+            <h1>Performance</h1>
+            <p class="text-muted">
+              Track profit, ROI and record over time from the First Goal Engine.
+            </p>
+          </div>
 
-        <div class="filter-row">
-          <span class="text-muted" style="font-size:11px;">Book</span>
-          <select class="pill-select" id="bookSelect">
-            <option value="ALL">All books</option>
-            <option value="FANDUEL">FanDuel</option>
-            <option value="DRAFTKINGS">DraftKings</option>
-            <option value="BETMGM">BetMGM</option>
-            <option value="ESPN BET">ESPN BET</option>
-            <option value="HARD ROCK BET">Hard Rock Bet</option>
-          </select>
-        </div>
+          <!-- Timeframe toggle -->
+          <div class="segmented timeframe-toggle">
+            <button data-range="week">Week</button>
+            <button data-range="month" class="active">Month</button>
+            <button data-range="year">Year</button>
+          </div>
+        </section>
+
+        <!-- Top stats row -->
+        <section class="perf-kpis">
+          <div class="perf-kpi-card">
+            <div class="perf-kpi-label">Profit</div>
+            <div class="perf-kpi-value" id="perf-profit">$0.00</div>
+          </div>
+          <div class="perf-kpi-card">
+            <div class="perf-kpi-label">ROI</div>
+            <div class="perf-kpi-value" id="perf-roi">0.0%</div>
+          </div>
+          <div class="perf-kpi-card">
+            <div class="perf-kpi-label">Record</div>
+            <div class="perf-kpi-value" id="perf-record">0-0-0</div>
+            <div class="perf-kpi-sub" id="perf-bets">0 bets</div>
+          </div>
+        </section>
+
+        <!-- Chart + calendar -->
+        <section class="perf-layout">
+          <!-- Equity curve -->
+          <div class="perf-panel">
+            <div class="perf-panel-header">
+              <span class="perf-panel-title">P&amp;L Curve</span>
+            </div>
+            <div class="perf-chart-wrapper">
+              <svg id="equityChart" viewBox="0 0 600 200" preserveAspectRatio="none"></svg>
+            </div>
+          </div>
+
+          <!-- Calendar -->
+          <div class="perf-panel">
+            <div class="perf-panel-header">
+              <span class="perf-panel-title" id="cal-title">Month</span>
+              <span class="perf-panel-sub" id="cal-total">+$0.00</span>
+            </div>
+            <div class="perf-calendar" id="perf-calendar">
+              <!-- calendar injected here -->
+            </div>
+          </div>
+        </section>
+
+        <p class="text-muted perf-footnote" id="perf-footnote">
+          Performance excludes pending bets. Calendar tiles show daily net P/L.
+        </p>
       </section>
-
-      <!-- GAMES LIST -->
-      <section class="games-list" id="gamesList"></section>
     </main>
   </div>
 
@@ -84,15 +151,19 @@
     const SHEET_API_URL =
       "https://script.google.com/macros/s/AKfycbwZ5pD8aFMAkRIE3qMfXfyHVdEp7RVhLsvhisDPHgVEKwQPFaViL2wtiJFgfC5ukanB/exec";
 
+    // ------------ TODAY VIEW STATE ------------ //
     let games = [];
     let viewMode = "plays"; // "plays" or "playsLeans"
     let bookFilter = "ALL";
 
     const gamesListEl = document.getElementById("gamesList");
 
-    /* ------------------------------
-       ESPN team slug mapping (for logos)
-    ------------------------------ */
+    // ------------ PERFORMANCE STATE ------------ //
+    let perfDaily = [];  // [{dateKey, date, pnl, wager, bets, wins}]
+    let perfOverall = null;
+    let perfRange = "month"; // "week" | "month" | "year"
+
+    // ------------ COMMON HELPERS ------------ //
     const ESPN_SLUGS = {
       TBL: "tb",
       LAK: "la",
@@ -135,9 +206,6 @@
       return ESPN_SLUGS[code] || code.toLowerCase();
     }
 
-    /* ------------------------------
-       Formatting helpers
-    ------------------------------ */
     function formatPercent(v) {
       const num = Number(v);
       if (isNaN(num)) return "";
@@ -154,9 +222,6 @@
       return (raw || "").toString().trim().toUpperCase();
     }
 
-    /* ------------------------------
-       Tag helpers
-    ------------------------------ */
     function tagValue(m) {
       return (m.tag || "").toString().trim().toUpperCase();
     }
@@ -169,9 +234,16 @@
       return tagValue(m) === "LEAN";
     }
 
-    /* ------------------------------
-       Book logo helpers
-    ------------------------------ */
+    // Money parser: "$34.50", "-$10.00" or number
+    function parseMoney(v) {
+      if (v == null || v === "") return 0;
+      if (typeof v === "number") return v;
+      const s = v.toString().replace(/[\$,]/g, "");
+      const num = Number(s);
+      return isNaN(num) ? 0 : num;
+    }
+
+    // ------------ BOOK LOGO HELPERS ------------ //
     function bookShortName(raw) {
       const name = normalizeBook(raw);
       if (name.includes("FANDUEL")) return "FD";
@@ -201,10 +273,8 @@
       return `<span class="book-logo ${cls}">${short}</span>`;
     }
 
-    /* ------------------------------
-       Render
-    ------------------------------ */
-    function render() {
+    // ------------ TODAY RENDERING ------------ //
+    function renderToday() {
       gamesListEl.innerHTML = "";
       let any = false;
 
@@ -216,19 +286,16 @@
 
         let markets = allMarkets.slice();
 
-        // Plays vs Plays & leans
         if (viewMode === "plays") {
           markets = markets.filter(isPlay);
         }
 
-        // Book filter
         if (bookFilter !== "ALL") {
           markets = markets.filter(
             (m) => normalizeBook(m.book) === bookFilter
           );
         }
 
-        // If nothing after filters, skip this game
         if (markets.length === 0) return;
         any = true;
 
@@ -238,7 +305,6 @@
         const card = document.createElement("article");
         card.className = "game-card";
 
-        // Header
         card.innerHTML = `
           <header class="game-header">
             <div style="display:flex; align-items:center; gap:10px;">
@@ -280,12 +346,14 @@
                       tagHtml = '<span class="tag-pill tag-lean">LEAN</span>';
                     }
 
-                    const scoreNum = Number(
-                      m.score === undefined || m.score === null ? 0 : m.score
-                    );
-                    const unitsNum = Number(
-                      m.units === undefined || m.units === null ? 0 : m.units
-                    );
+                    const scoreNum =
+                      m.score === undefined || m.score === null
+                        ? 0
+                        : Number(m.score);
+                    const unitsNum =
+                      m.units === undefined || m.units === null
+                        ? 0
+                        : Number(m.units);
 
                     return `
                       <tr class="${isPlay(m) ? "play-row" : ""}">
@@ -316,29 +384,318 @@
       }
     }
 
-    /* ------------------------------
-       Data load
-    ------------------------------ */
+    // ------------ PERFORMANCE COMPUTE ------------ //
+    function computePerformance(logRows) {
+      const dailyMap = new Map();
+      let totalProfit = 0;
+      let totalWager = 0;
+      let wins = 0;
+      let losses = 0;
+      let pushes = 0;
+      let bets = 0;
+
+      (logRows || []).forEach((row) => {
+        const status =
+          (row.status || row.STATUS || "").toString().trim().toUpperCase();
+        const dateKey =
+          row.dateKey || row.DateKey || row.DATEKEY || row.Date || null;
+        if (!dateKey) return;
+
+        const pl = parseMoney(row.pl || row["P/L"]);
+        const wager = parseMoney(row.wager || row.Wager);
+
+        // skip pending in historical performance
+        if (status === "PENDING") return;
+
+        let d = dailyMap.get(dateKey);
+        if (!d) {
+          d = { dateKey, pnl: 0, wager: 0, bets: 0, wins: 0 };
+          dailyMap.set(dateKey, d);
+        }
+
+        d.pnl += pl;
+        d.wager += wager;
+        d.bets += 1;
+        if (status === "WIN") d.wins += 1;
+
+        totalProfit += pl;
+        totalWager += wager;
+        bets += 1;
+        if (status === "WIN") wins += 1;
+        else if (status === "LOSS") losses += 1;
+        else pushes += 1;
+      });
+
+      perfDaily = Array.from(dailyMap.values()).map((d) => {
+        d.date = new Date(d.dateKey);
+        return d;
+      });
+
+      perfDaily.sort((a, b) => a.date - b.date);
+
+      const roi = totalWager ? totalProfit / totalWager : 0;
+      perfOverall = {
+        profit: totalProfit,
+        wager: totalWager,
+        roi,
+        bets,
+        wins,
+        losses,
+        pushes
+      };
+    }
+
+    function getRangeDaily(range) {
+      if (!perfDaily.length) return [];
+      const msPerDay = 24 * 60 * 60 * 1000;
+      const latest = perfDaily[perfDaily.length - 1].date.getTime();
+      let cutoff = 0;
+
+      if (range === "week") {
+        cutoff = latest - 6 * msPerDay;
+      } else if (range === "month") {
+        cutoff = latest - 29 * msPerDay;
+      } else if (range === "year") {
+        cutoff = latest - 364 * msPerDay;
+      }
+
+      return perfDaily.filter((d) => d.date.getTime() >= cutoff);
+    }
+
+    // ------------ PERFORMANCE RENDERING ------------ //
+    function renderPerformance() {
+      const rows = getRangeDaily(perfRange);
+      const equitySvg = document.getElementById("equityChart");
+      const profitEl = document.getElementById("perf-profit");
+      const roiEl = document.getElementById("perf-roi");
+      const recordEl = document.getElementById("perf-record");
+      const betsEl = document.getElementById("perf-bets");
+
+      if (!rows.length || !perfOverall) {
+        equitySvg.innerHTML = "";
+        document.getElementById("perf-calendar").innerHTML =
+          '<p class="text-muted" style="font-size:12px;">No performance data yet.</p>';
+        profitEl.textContent = "$0.00";
+        roiEl.textContent = "0.0%";
+        recordEl.textContent = "0-0-0";
+        betsEl.textContent = "0 bets";
+        return;
+      }
+
+      // Range totals
+      let rangeProfit = 0;
+      let rangeWager = 0;
+      let rangeWins = 0;
+      let rangeLosses = 0;
+      let rangePushes = 0;
+      rows.forEach((d) => {
+        rangeProfit += d.pnl;
+        rangeWager += d.wager;
+        rangeWins += d.wins;
+        rangeLosses += d.bets - d.wins; // no pushes tracked per-day
+      });
+      // pushes only available overall
+      const totalBets = rows.reduce((sum, d) => sum + d.bets, 0);
+      const rangeRoi = rangeWager ? rangeProfit / rangeWager : 0;
+
+      profitEl.textContent =
+        (rangeProfit >= 0 ? "+" : "") + rangeProfit.toFixed(2);
+      roiEl.textContent = (rangeRoi * 100).toFixed(2) + "%";
+      recordEl.textContent =
+        rangeWins + "-" + rangeLosses + "-" + (rangePushes || 0);
+      betsEl.textContent = totalBets + " bets";
+
+      // Equity curve (cumulative P/L over rows)
+      let cum = 0;
+      const equity = rows.map((d) => {
+        cum += d.pnl;
+        return { date: d.date, value: cum };
+      });
+
+      const values = equity.map((p) => p.value);
+      const minV = Math.min(...values, 0);
+      const maxV = Math.max(...values, 0);
+      const range = maxV - minV || 1;
+
+      const width = 600;
+      const height = 200;
+      const padX = 10;
+      const padY = 10;
+      const usableW = width - padX * 2;
+      const usableH = height - padY * 2;
+
+      const n = equity.length;
+      const points = equity.map((p, i) => {
+        const x = padX + (usableW * i) / Math.max(n - 1, 1);
+        const y =
+          padY + usableH - ((p.value - minV) / range) * usableH;
+        return { x, y };
+      });
+
+      let path = "";
+      if (points.length) {
+        path = "M " + points[0].x + " " + points[0].y;
+        for (let i = 1; i < points.length; i++) {
+          path += " L " + points[i].x + " " + points[i].y;
+        }
+      }
+
+      // Area fill
+      let areaPath = "";
+      if (points.length) {
+        const baselineY =
+          padY + usableH - ((0 - minV) / range) * usableH;
+        areaPath = "M " + points[0].x + " " + baselineY;
+        points.forEach((p) => {
+          areaPath += " L " + p.x + " " + p.y;
+        });
+        areaPath +=
+          " L " +
+          points[points.length - 1].x +
+          " " +
+          baselineY +
+          " Z";
+      }
+
+      equitySvg.innerHTML = `
+        <defs>
+          <linearGradient id="equityFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#22c55e" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="#22c55e" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <path d="${areaPath}" fill="url(#equityFill)" stroke="none"></path>
+        <path d="${path}" fill="none" stroke="#16a34a" stroke-width="2"></path>
+      `;
+
+      renderPerfCalendar(rows);
+    }
+
+    function renderPerfCalendar(rows) {
+      const calEl = document.getElementById("perf-calendar");
+      if (!rows.length) {
+        calEl.innerHTML = "";
+        return;
+      }
+
+      // Use month of latest row
+      const latest = rows[rows.length - 1].date;
+      const year = latest.getFullYear();
+      const month = latest.getMonth(); // 0-based
+
+      const firstOfMonth = new Date(year, month, 1);
+      const startDay = firstOfMonth.getDay(); // 0=Sun
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      // map dateKey -> pnl
+      const map = new Map();
+      rows.forEach((d) => {
+        const k = d.dateKey || d.date.toISOString().slice(0, 10);
+        map.set(k, d.pnl);
+      });
+
+      const monthLabel = latest.toLocaleString(undefined, {
+        month: "short",
+        year: "numeric"
+      });
+      document.getElementById("cal-title").textContent = monthLabel;
+
+      // total pnl for that month
+      let monthTotal = 0;
+      rows.forEach((d) => {
+        if (
+          d.date.getFullYear() === year &&
+          d.date.getMonth() === month
+        ) {
+          monthTotal += d.pnl;
+        }
+      });
+      document.getElementById("cal-total").textContent =
+        (monthTotal >= 0 ? "+" : "") + monthTotal.toFixed(2);
+
+      // Build calendar grid
+      let html = `
+        <div class="cal-row cal-header">
+          <div>S</div><div>M</div><div>T</div><div>W</div>
+          <div>T</div><div>F</div><div>S</div>
+        </div>
+        <div class="cal-grid">
+      `;
+
+      // leading blanks
+      for (let i = 0; i < startDay; i++) {
+        html += `<div class="cal-cell empty"></div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateObj = new Date(year, month, day);
+        const key = dateObj.toISOString().slice(0, 10);
+        const pnl = map.get(key) || 0;
+
+        let bg = "#e5e7eb";
+        let color = "#6b7280";
+        if (pnl > 0) {
+          const intensity = Math.min(Math.abs(pnl) / 400, 1);
+          bg = `rgba(34,197,94,${0.15 + intensity * 0.25})`;
+          color = "#16a34a";
+        } else if (pnl < 0) {
+          const intensity = Math.min(Math.abs(pnl) / 400, 1);
+          bg = `rgba(248,113,113,${0.15 + intensity * 0.25})`;
+          color = "#dc2626";
+        }
+
+        const pnlLabel =
+          pnl === 0
+            ? ""
+            : (pnl > 0 ? "+" : "") + pnl.toFixed(0);
+
+        html += `
+          <div class="cal-cell" style="background:${bg}; color:${color};">
+            <div class="cal-day">${day}</div>
+            <div class="cal-pnl">$${pnlLabel}</div>
+          </div>
+        `;
+      }
+
+      html += "</div>";
+      calEl.innerHTML = html;
+    }
+
+    // ------------ DATA LOADING ------------ //
     async function loadData() {
       try {
         const res = await fetch(SHEET_API_URL);
         if (!res.ok) throw new Error("HTTP " + res.status);
         const json = await res.json();
 
+        // Today board
         games = Array.isArray(json.games) ? json.games : [];
-        render();
+        renderToday();
 
-        // KPIs from Tracker sheet
+        // Today KPIs from Tracker
         if (json.kpis) {
           if (json.kpis.units != null) {
-            document.getElementById("kpi-units").textContent = json.kpis.units;
+            document.getElementById("kpi-units").textContent =
+              json.kpis.units;
           }
           if (json.kpis.hitRate != null) {
-            document.getElementById("kpi-hit").textContent = json.kpis.hitRate;
+            document.getElementById("kpi-hit").textContent =
+              json.kpis.hitRate;
           }
           if (json.kpis.avgEv != null) {
-            document.getElementById("kpi-ev").textContent = json.kpis.avgEv;
+            document.getElementById("kpi-ev").textContent =
+              json.kpis.avgEv;
           }
+        }
+
+        // Performance log from FG Model Log
+        if (Array.isArray(json.log)) {
+          computePerformance(json.log);
+          renderPerformance();
+        } else {
+          // If log isn't wired up yet, just show placeholder
+          document.getElementById("perf-calendar").innerHTML =
+            '<p class="text-muted" style="font-size:12px;">Wire up json.log from FG Model Log to see performance here.</p>';
         }
       } catch (err) {
         console.error("Error loading data:", err);
@@ -347,13 +704,20 @@
       }
     }
 
-    /* ------------------------------
-       Init
-    ------------------------------ */
+    // ------------ VIEW SWITCHING & INIT ------------ //
+    function showView(view) {
+      const todayEl = document.getElementById("todayView");
+      const perfEl = document.getElementById("performanceView");
+
+      todayEl.classList.toggle("hidden", view !== "today");
+      perfEl.classList.toggle("hidden", view !== "performance");
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("today-date").textContent =
         new Date().toLocaleDateString();
 
+      // Today filters
       const btnPlays = document.getElementById("btnPlays");
       const btnPlaysLeans = document.getElementById("btnPlaysLeans");
       const bookSelect = document.getElementById("bookSelect");
@@ -362,20 +726,46 @@
         viewMode = "plays";
         btnPlays.classList.add("active");
         btnPlaysLeans.classList.remove("active");
-        render();
+        renderToday();
       };
 
       btnPlaysLeans.onclick = () => {
         viewMode = "playsLeans";
         btnPlaysLeans.classList.add("active");
         btnPlays.classList.remove("active");
-        render();
+        renderToday();
       };
 
       bookSelect.onchange = (e) => {
         bookFilter = e.target.value.toUpperCase();
-        render();
+        renderToday();
       };
+
+      // Nav links
+      const navLinks = document.querySelectorAll(".nav-link");
+      navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          navLinks.forEach((l) => l.classList.remove("active"));
+          link.classList.add("active");
+          const view = link.dataset.view;
+          if (view === "today") showView("today");
+          if (view === "performance") showView("performance");
+          // Odds / About can be added later
+        });
+      });
+
+      // Timeframe toggle in performance
+      const tfButtons = document.querySelectorAll(
+        ".timeframe-toggle button"
+      );
+      tfButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          tfButtons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          perfRange = btn.dataset.range;
+          renderPerformance();
+        });
+      });
 
       loadData();
     });
