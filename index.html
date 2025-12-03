@@ -166,86 +166,113 @@
     }
 
     /* ---- RENDER ---- */
-    function render() {
-      gamesListEl.innerHTML = "";
-      let any = false;
+    <script>
+  // ...keep your constants + helpers above (SHEET_API_URL, ESPN_SLUGS, getSlug, etc.)
 
-      games.forEach((g) => {
-        const allMarkets = g.markets || [];
+  function render() {
+    gamesListEl.innerHTML = "";
+    let any = false;
 
-        const playCount = allMarkets.filter(isPlay).length;
-        const leanCount = allMarkets.filter(isLean).length;
+    games.forEach((g) => {
+      const allMarkets = g.markets || [];
 
-        let markets = allMarkets.slice();
+      const playCount = allMarkets.filter(isPlay).length;
+      const leanCount = allMarkets.filter(isLean).length;
 
-        if (viewMode === "plays") markets = markets.filter(isPlay);
-        if (bookFilter !== "ALL") {
-          markets = markets.filter(m => normalizeBook(m.book) === bookFilter);
-        }
+      let markets = allMarkets.slice();
 
-        if (markets.length === 0) return;
-        any = true;
-
-        const awaySlug = getSlug(g.awayTeam);
-        const homeSlug = getSlug(g.homeTeam);
-
-        const card = document.createElement("article");
-        card.className = "game-card";
-
-        card.innerHTML = `
-          <header class="game-header">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${awaySlug}.png" />
-              <div class="game-title">${g.awayTeam}</div>
-              <div style="color:#64748b;font-size:12px;">@</div>
-              <div class="game-title">${g.homeTeam}</div>
-              <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${homeSlug}.png" />
-            </div>
-            <div style="display:flex; flex-direction:column; align-items:flex-end;">
-              <span class="plays-summary">${playCount} Plays • ${leanCount} Leans</span>
-            </div>
-          </header>
-
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Player</th>
-                  <th>Team</th>
-                  <th class="align-right">FG Rank</th>
-                  <th class="align-right">EV %</th>
-                  <th class="align-right">Best Odds</th>
-                  <th>Book</th>
-                  <th class="align-right">Units</th>
-                  <th class="align-right">Score</th>
-                  <th>Tag</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${markets.map(m => `
-                  <tr class="${isPlay(m) ? "play-row" : ""}">
-                    <td>${m.player}</td>
-                    <td>${m.team}</td>
-                    <td class="align-right">${m.fgRank}</td>
-                    <td class="align-right">${formatPercent(m.ev)}</td>
-                    <td class="align-right">${formatOdds(m.bestOdds)}</td>
-                    <td>${getBookLogoHtml(m.book)}</td>
-                    <td class="align-right">${m.units?.toFixed(2) ?? ""}u</td>
-                    <td class="align-right">${Number(m.score).toFixed(2)}</td>
-                    <td>${tagValue(m)}</td>
-                  </tr>`).join("")}
-              </tbody>
-            </table>
-          </div>
-        `;
-
-        gamesListEl.appendChild(card);
-      });
-
-      if (!any) {
-        gamesListEl.innerHTML = `<p class="text-muted">No markets match filters.</p>`;
+      if (viewMode === "plays") {
+        markets = markets.filter(isPlay);
       }
+
+      if (bookFilter !== "ALL") {
+        markets = markets.filter(
+          (m) => normalizeBook(m.book) === bookFilter
+        );
+      }
+
+      if (markets.length === 0) return;
+      any = true;
+
+      const awaySlug = getSlug(g.awayTeam);
+      const homeSlug = getSlug(g.homeTeam);
+
+      const card = document.createElement("article");
+      card.className = "game-card";
+
+      card.innerHTML = `
+        <header class="game-header">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${awaySlug}.png" />
+            <div class="game-title">${(g.awayTeam || "").toUpperCase()}</div>
+            <div style="color:#64748b;font-size:12px;">@</div>
+            <div class="game-title">${(g.homeTeam || "").toUpperCase()}</div>
+            <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${homeSlug}.png" />
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end;">
+            <span class="plays-summary">${playCount} Plays • ${leanCount} Leans</span>
+          </div>
+        </header>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Team</th>
+                <th class="align-right">FG Rank</th>
+                <th class="align-right">EV %</th>
+                <th class="align-right">Best Odds</th>
+                <th>Book</th>
+                <th class="align-right">Units</th>
+                <th class="align-right">Score</th>
+                <th>Tag</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${markets
+                .sort((a, b) => a.fgRank - b.fgRank)
+                .map((m) => {
+                  const t = tagValue(m);
+                  const tagHtml =
+                    t === "PLAY"
+                      ? '<span class="tag-pill tag-play">PLAY</span>'
+                      : t === "LEAN"
+                      ? '<span class="tag-pill tag-lean">LEAN</span>'
+                      : '<span class="tag-pill tag-pass">PASS</span>';
+
+                  return `
+                    <tr class="${isPlay(m) ? "play-row" : ""}">
+                      <td>${m.player}</td>
+                      <td>${m.team}</td>
+                      <td class="align-right">${m.fgRank}</td>
+                      <td class="align-right">${formatPercent(m.ev)}</td>
+                      <td class="align-right">${formatOdds(m.bestOdds)}</td>
+                      <td>${getBookLogoHtml(m.book)}</td>
+                      <td class="align-right">${m.units != null ? m.units.toFixed(2) + "u" : ""}</td>
+                      <td class="align-right">${Number(m.score).toFixed(2)}</td>
+                      <td>${tagHtml}</td>
+                    </tr>
+                  `;
+                })
+                .join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      gamesListEl.appendChild(card);
+    });
+
+    if (!any) {
+      gamesListEl.innerHTML =
+        '<p class="text-muted">No markets match filters.</p>';
     }
+  }
+
+  // ...rest of your JS: loadData(), DOMContentLoaded, etc.
+</script>
+
 
     /* ---- DATA ---- */
     async function loadData() {
