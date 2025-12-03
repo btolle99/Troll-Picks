@@ -4,14 +4,11 @@
   <meta charset="UTF-8" />
   <title>First Goal Engine</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- EXTERNAL CSS -->
   <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
   <div class="shell">
-
+    <!-- NAVBAR -->
     <header>
       <div class="nav-inner">
         <a class="nav-left">
@@ -27,15 +24,23 @@
       </div>
     </header>
 
+    <!-- MAIN CONTENT -->
     <main>
+      <!-- HERO -->
       <section class="hero">
-        <h1>Today&apos;s NHL First Goal Board</h1>
-        <p class="text-muted">Model-driven first goal edges across books, game by game.</p>
-        <p class="text-muted hero-subline">Today • <span id="today-date"></span></p>
+        <div>
+          <h1>Today&apos;s NHL First Goal Board</h1>
+          <p class="text-muted">
+            Model-driven first goal edges across books, game by game.
+          </p>
+          <p class="text-muted hero-subline">
+            Today • <span id="today-date"></span>
+          </p>
+        </div>
 
         <div class="kpis">
           <div class="kpi-card">
-            <div class="kpi-label">All Time P/L</div>
+            <div class="kpi-label">All time P/L</div>
             <div class="kpi-value"><span id="kpi-units">+0.0u</span></div>
           </div>
           <div class="kpi-card">
@@ -57,69 +62,72 @@
         </div>
 
         <div class="filter-row">
-          <div>
-            <span class="text-muted">Book</span>
-            <select class="pill-select" id="bookSelect">
-              <option value="ALL">All books</option>
-              <option value="FANDUEL">FanDuel</option>
-              <option value="DRAFTKINGS">DraftKings</option>
-              <option value="BETMGM">BetMGM</option>
-              <option value="ESPN BET">ESPN BET</option>
-              <option value="HARD ROCK BET">Hard Rock Bet</option>
-            </select>
-          </div>
+          <span class="text-muted" style="font-size:11px;">Book</span>
+          <select class="pill-select" id="bookSelect">
+            <option value="ALL">All books</option>
+            <option value="FANDUEL">FanDuel</option>
+            <option value="DRAFTKINGS">DraftKings</option>
+            <option value="BETMGM">BetMGM</option>
+            <option value="ESPN BET">ESPN BET</option>
+            <option value="HARD ROCK BET">Hard Rock Bet</option>
+          </select>
         </div>
       </section>
 
+      <!-- GAMES LIST -->
       <section class="games-list" id="gamesList"></section>
-
     </main>
   </div>
 
-  <!-- SCRIPTS -->
   <script>
-    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwZ5pD8aFMAkRIE3qMfXfyHVdEp7RVhLsvhisDPHgVEKwQPFaViL2wtiJFgfC5ukanB/exec";
+    // Google Apps Script web app endpoint
+    const SHEET_API_URL =
+      "https://script.google.com/macros/s/AKfycbwZ5pD8aFMAkRIE3qMfXfyHVdEp7RVhLsvhisDPHgVEKwQPFaViL2wtiJFgfC5ukanB/exec";
 
     let games = [];
-    let viewMode = "plays";
+    let viewMode = "plays"; // "plays" or "playsLeans"
     let bookFilter = "ALL";
 
     const gamesListEl = document.getElementById("gamesList");
 
-    /* ---- TEAM LOGO FIX ---- */
+    /* ------------------------------
+       ESPN team slug mapping (for logos)
+    ------------------------------ */
     const ESPN_SLUGS = {
-      "TBL": "tb",
-      "LAK": "la",
-      "VGK": "vgk",
-      "NJD": "nj",
-      "SJS": "sj",
-      "WSH": "wsh",
-      "CBJ": "cbj",
-      "MTL": "mtl",
-      "NYR": "nyr",
-      "NYI": "nyi",
-      "PIT": "pit",
-      "BOS": "bos",
-      "DET": "det",
-      "CHI": "chi",
-      "DAL": "dal",
-      "COL": "col",
-      "FLO": "fla",
-      "FLA": "fla",
-      "EDM": "edm",
-      "CGY": "cgy",
-      "VAN": "van",
-      "SEA": "sea",
-      "BUF": "buf",
-      "PHI": "phi",
-      "CAR": "car",
-      "OTT": "ott",
-      "MIN": "min",
-      "WPG": "wpg",
-      "STL": "stl",
-      "ARI": "ari",
-      "ANA": "ana",
-      "TOR": "tor"
+      TBL: "tb",
+      LAK: "la",
+      VGK: "vgk",
+      NJD: "nj",
+      SJS: "sj",
+      WSH: "wsh",
+      CBJ: "cbj",
+      MTL: "mtl",
+      NYR: "nyr",
+      NYI: "nyi",
+      PIT: "pit",
+      BOS: "bos",
+      DET: "det",
+      CHI: "chi",
+      DAL: "dal",
+      COL: "col",
+      FLA: "fla",
+      FLO: "fla",
+      EDM: "edm",
+      CGY: "cgy",
+      VAN: "van",
+      SEA: "sea",
+      BUF: "buf",
+      PHI: "phi",
+      CAR: "car",
+      OTT: "ott",
+      MIN: "min",
+      WPG: "wpg",
+      STL: "stl",
+      ARI: "ari",
+      ANA: "ana",
+      TOR: "tor",
+      NSH: "nsh",
+      NASH: "nsh"
     };
 
     function getSlug(team) {
@@ -127,27 +135,53 @@
       return ESPN_SLUGS[code] || code.toLowerCase();
     }
 
-    /* --- formats --- */
-    function formatPercent(v) { return (v * 100).toFixed(1) + "%"; }
-    function formatOdds(v) { return v > 0 ? "+" + v : v; }
-    function normalizeBook(raw) { return (raw || "").toString().trim().toUpperCase(); }
+    /* ------------------------------
+       Formatting helpers
+    ------------------------------ */
+    function formatPercent(v) {
+      const num = Number(v);
+      if (isNaN(num)) return "";
+      return (num * 100).toFixed(1) + "%";
+    }
 
-    /* ---- TAG HELPERS ---- */
-    function tagValue(m) { return (m.tag || "").trim().toUpperCase(); }
-    function isPlay(m) { return tagValue(m) === "PLAY"; }
-    function isLean(m) { return tagValue(m) === "LEAN"; }
+    function formatOdds(v) {
+      const num = Number(v);
+      if (isNaN(num)) return "";
+      return num > 0 ? "+" + num : "" + num;
+    }
 
-    /* ---- BOOK LOGO HELPERS ---- */
+    function normalizeBook(raw) {
+      return (raw || "").toString().trim().toUpperCase();
+    }
+
+    /* ------------------------------
+       Tag helpers
+    ------------------------------ */
+    function tagValue(m) {
+      return (m.tag || "").toString().trim().toUpperCase();
+    }
+
+    function isPlay(m) {
+      return tagValue(m) === "PLAY";
+    }
+
+    function isLean(m) {
+      return tagValue(m) === "LEAN";
+    }
+
+    /* ------------------------------
+       Book logo helpers
+    ------------------------------ */
     function bookShortName(raw) {
       const name = normalizeBook(raw);
       if (name.includes("FANDUEL")) return "FD";
       if (name.includes("DRAFTKINGS")) return "DK";
       if (name.includes("ESPN")) return "ESPN";
-      if (name.includes("BETMGM")) return "MGM";
-      if (name.includes("BET365")) return "365";
+      if (name.includes("BETMGM") || name === "MGM") return "MGM";
+      if (name.includes("BET365") || name === "365") return "365";
       if (name.includes("CAESARS")) return "CZ";
       if (name.includes("HARD ROCK")) return "HR";
-      return "?";
+      return name || "?";
     }
 
     function bookClass(raw) {
@@ -155,151 +189,196 @@
       if (name.includes("FANDUEL")) return "book-fd";
       if (name.includes("DRAFTKINGS")) return "book-dk";
       if (name.includes("ESPN")) return "book-espn";
-      if (name.includes("BETMGM")) return "book-mgm";
-      if (name.includes("BET365")) return "book-365";
+      if (name.includes("BETMGM") || name === "MGM") return "book-mgm";
+      if (name.includes("BET365") || name === "365") return "book-365";
       if (name.includes("CAESARS")) return "book-caesars";
       return "";
     }
 
     function getBookLogoHtml(raw) {
-      return `<span class="book-logo ${bookClass(raw)}">${bookShortName(raw)}</span>`;
+      const short = bookShortName(raw);
+      const cls = bookClass(raw);
+      return `<span class="book-logo ${cls}">${short}</span>`;
     }
 
-    /* ---- RENDER ---- */
-    <script>
-  // ...keep your constants + helpers above (SHEET_API_URL, ESPN_SLUGS, getSlug, etc.)
+    /* ------------------------------
+       Render
+    ------------------------------ */
+    function render() {
+      gamesListEl.innerHTML = "";
+      let any = false;
 
-  function render() {
-    gamesListEl.innerHTML = "";
-    let any = false;
+      games.forEach((g) => {
+        const allMarkets = Array.isArray(g.markets) ? g.markets : [];
 
-    games.forEach((g) => {
-      const allMarkets = g.markets || [];
+        const playCount = allMarkets.filter(isPlay).length;
+        const leanCount = allMarkets.filter(isLean).length;
 
-      const playCount = allMarkets.filter(isPlay).length;
-      const leanCount = allMarkets.filter(isLean).length;
+        let markets = allMarkets.slice();
 
-      let markets = allMarkets.slice();
+        // Plays vs Plays & leans
+        if (viewMode === "plays") {
+          markets = markets.filter(isPlay);
+        }
 
-      if (viewMode === "plays") {
-        markets = markets.filter(isPlay);
-      }
+        // Book filter
+        if (bookFilter !== "ALL") {
+          markets = markets.filter(
+            (m) => normalizeBook(m.book) === bookFilter
+          );
+        }
 
-      if (bookFilter !== "ALL") {
-        markets = markets.filter(
-          (m) => normalizeBook(m.book) === bookFilter
-        );
-      }
+        // If nothing after filters, skip this game
+        if (markets.length === 0) return;
+        any = true;
 
-      if (markets.length === 0) return;
-      any = true;
+        const awaySlug = getSlug(g.awayTeam);
+        const homeSlug = getSlug(g.homeTeam);
 
-      const awaySlug = getSlug(g.awayTeam);
-      const homeSlug = getSlug(g.homeTeam);
+        const card = document.createElement("article");
+        card.className = "game-card";
 
-      const card = document.createElement("article");
-      card.className = "game-card";
+        // Header
+        card.innerHTML = `
+          <header class="game-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${awaySlug}.png" />
+              <div class="game-title">${(g.awayTeam || "").toUpperCase()}</div>
+              <div style="color:#64748b;font-size:12px;">@</div>
+              <div class="game-title">${(g.homeTeam || "").toUpperCase()}</div>
+              <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${homeSlug}.png" />
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end;">
+              <span class="plays-summary">${playCount} Plays • ${leanCount} Leans</span>
+            </div>
+          </header>
 
-      card.innerHTML = `
-        <header class="game-header">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${awaySlug}.png" />
-            <div class="game-title">${(g.awayTeam || "").toUpperCase()}</div>
-            <div style="color:#64748b;font-size:12px;">@</div>
-            <div class="game-title">${(g.homeTeam || "").toUpperCase()}</div>
-            <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${homeSlug}.png" />
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th class="align-right">FG Rank</th>
+                  <th class="align-right">EV %</th>
+                  <th class="align-right">Best odds</th>
+                  <th>Book</th>
+                  <th class="align-right">Units</th>
+                  <th class="align-right">Score</th>
+                  <th>Tag</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${markets
+                  .sort((a, b) => (a.fgRank || 9999) - (b.fgRank || 9999))
+                  .map((m) => {
+                    const tag = tagValue(m);
+                    let tagHtml = '<span class="tag-pill tag-pass">PASS</span>';
+                    if (tag === "PLAY") {
+                      tagHtml = '<span class="tag-pill tag-play">PLAY</span>';
+                    } else if (tag === "LEAN") {
+                      tagHtml = '<span class="tag-pill tag-lean">LEAN</span>';
+                    }
+
+                    const scoreNum = Number(
+                      m.score === undefined || m.score === null ? 0 : m.score
+                    );
+                    const unitsNum = Number(
+                      m.units === undefined || m.units === null ? 0 : m.units
+                    );
+
+                    return `
+                      <tr class="${isPlay(m) ? "play-row" : ""}">
+                        <td>${m.player || ""}</td>
+                        <td>${m.team || ""}</td>
+                        <td class="align-right">${m.fgRank || ""}</td>
+                        <td class="align-right">${formatPercent(m.ev)}</td>
+                        <td class="align-right">${formatOdds(m.bestOdds)}</td>
+                        <td>${getBookLogoHtml(m.book)}</td>
+                        <td class="align-right">${unitsNum ? unitsNum.toFixed(2) + "u" : ""}</td>
+                        <td class="align-right">${scoreNum.toFixed(2)}</td>
+                        <td>${tagHtml}</td>
+                      </tr>
+                    `;
+                  })
+                  .join("")}
+              </tbody>
+            </table>
           </div>
-          <div style="display:flex; flex-direction:column; align-items:flex-end;">
-            <span class="plays-summary">${playCount} Plays • ${leanCount} Leans</span>
-          </div>
-        </header>
+        `;
 
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Player</th>
-                <th>Team</th>
-                <th class="align-right">FG Rank</th>
-                <th class="align-right">EV %</th>
-                <th class="align-right">Best Odds</th>
-                <th>Book</th>
-                <th class="align-right">Units</th>
-                <th class="align-right">Score</th>
-                <th>Tag</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${markets
-                .sort((a, b) => a.fgRank - b.fgRank)
-                .map((m) => {
-                  const t = tagValue(m);
-                  const tagHtml =
-                    t === "PLAY"
-                      ? '<span class="tag-pill tag-play">PLAY</span>'
-                      : t === "LEAN"
-                      ? '<span class="tag-pill tag-lean">LEAN</span>'
-                      : '<span class="tag-pill tag-pass">PASS</span>';
+        gamesListEl.appendChild(card);
+      });
 
-                  return `
-                    <tr class="${isPlay(m) ? "play-row" : ""}">
-                      <td>${m.player}</td>
-                      <td>${m.team}</td>
-                      <td class="align-right">${m.fgRank}</td>
-                      <td class="align-right">${formatPercent(m.ev)}</td>
-                      <td class="align-right">${formatOdds(m.bestOdds)}</td>
-                      <td>${getBookLogoHtml(m.book)}</td>
-                      <td class="align-right">${m.units != null ? m.units.toFixed(2) + "u" : ""}</td>
-                      <td class="align-right">${Number(m.score).toFixed(2)}</td>
-                      <td>${tagHtml}</td>
-                    </tr>
-                  `;
-                })
-                .join("")}
-            </tbody>
-          </table>
-        </div>
-      `;
-
-      gamesListEl.appendChild(card);
-    });
-
-    if (!any) {
-      gamesListEl.innerHTML =
-        '<p class="text-muted">No markets match filters.</p>';
+      if (!any) {
+        gamesListEl.innerHTML =
+          '<p class="text-muted">No markets match the current filters.</p>';
+      }
     }
-  }
 
-  // ...rest of your JS: loadData(), DOMContentLoaded, etc.
-</script>
-
-
-    /* ---- DATA ---- */
+    /* ------------------------------
+       Data load
+    ------------------------------ */
     async function loadData() {
-      const res = await fetch(SHEET_API_URL);
-      const json = await res.json();
-      games = json.games || [];
-      render();
+      try {
+        const res = await fetch(SHEET_API_URL);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const json = await res.json();
+
+        games = Array.isArray(json.games) ? json.games : [];
+        render();
+
+        // KPIs from Tracker sheet
+        if (json.kpis) {
+          if (json.kpis.units != null) {
+            document.getElementById("kpi-units").textContent = json.kpis.units;
+          }
+          if (json.kpis.hitRate != null) {
+            document.getElementById("kpi-hit").textContent = json.kpis.hitRate;
+          }
+          if (json.kpis.avgEv != null) {
+            document.getElementById("kpi-ev").textContent = json.kpis.avgEv;
+          }
+        }
+      } catch (err) {
+        console.error("Error loading data:", err);
+        gamesListEl.innerHTML =
+          '<p class="text-muted">Could not load data from Sheets (fetch failed).</p>';
+      }
     }
 
-    /* ---- INIT ---- */
+    /* ------------------------------
+       Init
+    ------------------------------ */
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("today-date").textContent =
         new Date().toLocaleDateString();
 
-      document.getElementById("btnPlays").onclick = () => {
-        viewMode = "plays"; render();
+      const btnPlays = document.getElementById("btnPlays");
+      const btnPlaysLeans = document.getElementById("btnPlaysLeans");
+      const bookSelect = document.getElementById("bookSelect");
+
+      btnPlays.onclick = () => {
+        viewMode = "plays";
+        btnPlays.classList.add("active");
+        btnPlaysLeans.classList.remove("active");
+        render();
       };
-      document.getElementById("btnPlaysLeans").onclick = () => {
-        viewMode = "playsLeans"; render();
+
+      btnPlaysLeans.onclick = () => {
+        viewMode = "playsLeans";
+        btnPlaysLeans.classList.add("active");
+        btnPlays.classList.remove("active");
+        render();
       };
-      document.getElementById("bookSelect").onchange = (e) => {
-        bookFilter = e.target.value.toUpperCase(); render();
+
+      bookSelect.onchange = (e) => {
+        bookFilter = e.target.value.toUpperCase();
+        render();
       };
 
       loadData();
     });
   </script>
-
 </body>
 </html>
