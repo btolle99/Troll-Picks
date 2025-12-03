@@ -314,7 +314,7 @@
     .res-miss   { background: var(--miss-bg); border-color: var(--miss-border); color: #b91c1c; font-weight: 500; }
     .res-pending{ background: #f9fafb; color: #6b7280; }
 
-    /* Book logos (approx app colors) */
+    /* Book logos */
     .book-logo {
       display: inline-flex;
       align-items: center;
@@ -456,36 +456,48 @@
       return `<span class="book-logo ${cls}">${short}</span>`;
     }
 
+    // TAG HELPERS
+    function tagValue(m) {
+      return (m.tag || "").toString().trim().toUpperCase();
+    }
+
+    function isPlay(m) {
+      return tagValue(m) === "PLAY";
+    }
+
+    function isLean(m) {
+      return tagValue(m) === "LEAN";
+    }
+
     function render() {
       gamesListEl.innerHTML = "";
       let any = false;
 
       games.forEach((g) => {
-        let markets = (g.markets || []).slice();
+        const allMarkets = Array.isArray(g.markets) ? g.markets : [];
 
-        // plays vs plays & leans
+        // Counts always from full set of markets
+        const playCount = allMarkets.filter(isPlay).length;
+        const leanCount = allMarkets.filter(isLean).length;
+
+        // Start filtering from a copy
+        let markets = allMarkets.slice();
+
+        // Plays vs Plays & leans
         if (viewMode === "plays") {
-          markets = markets.filter(
-            (m) => (m.tag || "").toUpperCase().trim() === "PLAY"
-          );
+          markets = markets.filter(isPlay);
         }
 
-        // book filter
+        // Book filter
         if (bookFilter !== "ALL") {
           markets = markets.filter(
             (m) => normalizeBook(m.book) === bookFilter
           );
         }
 
+        // If no markets left after filters, hide the game
         if (markets.length === 0) return;
         any = true;
-
-        const playCount = markets.filter(
-          (m) => (m.tag || "").toUpperCase().trim() === "PLAY"
-        ).length;
-        const leanCount = markets.filter(
-          (m) => (m.tag || "").toUpperCase().trim() === "LEAN"
-        ).length;
 
         const card = document.createElement("article");
         card.className = "game-card";
@@ -514,7 +526,7 @@
         const tbodyRows = markets
           .sort((a, b) => a.fgRank - b.fgRank)
           .map((m) => {
-            const tagUpper = (m.tag || "").toUpperCase().trim();
+            const tagUpper = tagValue(m);
             const tag =
               tagUpper === "PLAY"
                 ? `<span class="tag-pill tag-play">PLAY</span>`
@@ -622,7 +634,7 @@
       };
 
       bookSelect.onchange = (e) => {
-        bookFilter = e.target.value;
+        bookFilter = e.target.value.toUpperCase();
         render();
       };
 
