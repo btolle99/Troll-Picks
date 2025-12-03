@@ -4,341 +4,14 @@
   <meta charset="UTF-8" />
   <title>First Goal Engine</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --border: #e2e8f0;
-      --border-strong: #cbd5f5;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --accent: #0f172a;
-      --accent-soft: #e2e8f0;
-      --play-bg: #fef3c7;
-      --play-border: #facc15;
-      --hit-bg: #dcfce7;
-      --hit-border: #22c55e;
-      --miss-bg: #fee2e2;
-      --miss-border: #ef4444;
-    }
 
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #e5f0ff 0, #f8fafc 42%, #f8fafc 100%);
-      color: var(--text-main);
-    }
-
-    .shell { min-height: 100vh; display: flex; flex-direction: column; }
-
-    /* --- NAV --- */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(12px);
-      background: rgba(248, 250, 252, 0.9);
-      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
-    }
-
-    .nav-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 16px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo-mark {
-      height: 28px;
-      width: 28px;
-      border-radius: 9px;
-      border: 1.5px solid #020617;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: -0.06em;
-      background: linear-gradient(135deg, #0f172a, #1f2937);
-      color: #e5e7eb;
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.35);
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .brand-label {
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      font-size: 14px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 6px;
-      font-size: 13px;
-    }
-
-    .nav-link {
-      padding: 4px 12px;
-      border-radius: 999px;
-      text-decoration: none;
-      color: #0f172a;
-      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-      cursor: default;
-    }
-
-    .nav-link.active {
-      background: #0f172a;
-      color: #f8fafc;
-      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.35);
-    }
-
-    /* --- MAIN --- */
-    main {
-      flex: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px 16px 40px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 24px;
-      letter-spacing: -0.04em;
-    }
-
-    .text-muted {
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    /* --- HERO --- */
-    .hero {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .hero-subline { font-size: 12px; }
-
-    .kpis {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .kpi-card {
-      background: linear-gradient(135deg, #ffffff, #f1f5f9);
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      padding: 12px 14px;
-      box-shadow: 0 8px 20px rgba(148, 163, 184, 0.25);
-    }
-
-    .kpi-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--text-muted);
-    }
-
-    .kpi-value { margin-top: 4px; font-size: 18px; font-weight: 600; }
-
-    /* --- FILTERS --- */
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      border-radius: 18px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      margin-bottom: 16px;
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
-    }
-
-    .segmented {
-      display: inline-flex;
-      padding: 3px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      font-size: 11px;
-      font-weight: 500;
-    }
-
-    .segmented button {
-      border: none;
-      background: transparent;
-      padding: 4px 12px;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-
-    .segmented button.active {
-      background: #ffffff;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2);
-    }
-
-    .filter-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      font-size: 11px;
-    }
-
-    .pill-select {
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      padding: 5px 10px;
-      font-size: 11px;
-      background: #ffffff;
-    }
-
-    /* --- GAME LIST --- */
-    .games-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .game-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
-    }
-
-    .game-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .team-logo {
-      width: 26px;
-      height: 26px;
-      object-fit: contain;
-    }
-
-    .game-title {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .game-meta {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .plays-summary {
-      color: var(--text-muted);
-      font-size: 11px;
-    }
-
-    /* --- TABLE --- */
-    .table-wrapper { overflow-x: auto; }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      font-size: 11px;
-    }
-
-    th, td {
-      padding: 6px;
-      white-space: nowrap;
-    }
-
-    th {
-      border-bottom: 1px solid #e5e7eb;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    tbody tr { border-bottom: 1px solid #e5e7eb; }
-
-    tbody tr.play-row {
-      background: rgba(254, 249, 195, 0.6);
-    }
-
-    .align-right { text-align: right; }
-
-    .tag-pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 10px;
-      border: 1px solid var(--border);
-    }
-
-    .tag-play {
-      background: var(--play-bg);
-      border-color: var(--play-border);
-      color: #854d0e;
-      font-weight: 500;
-    }
-
-    .tag-lean { background: #f3f4f6; color: #374151; }
-    .tag-pass { color: #9ca3af; }
-
-    .result-pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 10px;
-      border: 1px solid var(--border);
-    }
-
-    .res-hit    { background: var(--hit-bg);  border-color: var(--hit-border);  color: #166534; font-weight: 500; }
-    .res-miss   { background: var(--miss-bg); border-color: var(--miss-border); color: #b91c1c; font-weight: 500; }
-    .res-pending{ background: #f9fafb; color: #6b7280; }
-
-    /* Book logos */
-    .book-logo {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 9px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      background: #e5e7eb;
-      color: #111827;
-      min-width: 40px;
-    }
-    .book-fd      { background: #1141b8; color: #f9fafb; } /* FanDuel blue */
-    .book-dk      { background: #1a4d2e; color: #facc15; } /* DK green/black blend */
-    .book-espn    { background: #00b489; color: #f9fafb; } /* ESPN BET teal */
-    .book-mgm     { background: #1a1a1a; color: #fbbf24; } /* MGM black/gold */
-    .book-365     { background: #006b3f; color: #f9fafb; } /* bet365 green */
-    .book-caesars { background: #123524; color: #fefce8; } /* Caesars deep green */
-  </style>
+  <!-- EXTERNAL CSS -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <div class="shell">
+
     <header>
       <div class="nav-inner">
         <a class="nav-left">
@@ -378,13 +51,11 @@
 
       <!-- FILTERS -->
       <section class="filters">
-        <!-- Plays / Plays & leans toggle -->
         <div class="segmented">
           <button id="btnPlays" class="active">Plays</button>
           <button id="btnPlaysLeans">Plays &amp; leans</button>
         </div>
 
-        <!-- Book filter -->
         <div class="filter-row">
           <div>
             <span class="text-muted">Book</span>
@@ -401,42 +72,82 @@
       </section>
 
       <section class="games-list" id="gamesList"></section>
+
     </main>
   </div>
 
+  <!-- SCRIPTS -->
   <script>
-    // Sheets → Web App URL
     const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwZ5pD8aFMAkRIE3qMfXfyHVdEp7RVhLsvhisDPHgVEKwQPFaViL2wtiJFgfC5ukanB/exec";
 
     let games = [];
-    let viewMode = "plays"; // "plays" or "playsLeans"
+    let viewMode = "plays";
     let bookFilter = "ALL";
 
     const gamesListEl = document.getElementById("gamesList");
 
-    function formatPercent(v) {
-      return (v * 100).toFixed(1) + "%";
+    /* ---- TEAM LOGO FIX ---- */
+    const ESPN_SLUGS = {
+      "TBL": "tb",
+      "LAK": "la",
+      "VGK": "vgk",
+      "NJD": "nj",
+      "SJS": "sj",
+      "WSH": "wsh",
+      "CBJ": "cbj",
+      "MTL": "mtl",
+      "NYR": "nyr",
+      "NYI": "nyi",
+      "PIT": "pit",
+      "BOS": "bos",
+      "DET": "det",
+      "CHI": "chi",
+      "DAL": "dal",
+      "COL": "col",
+      "FLO": "fla",
+      "FLA": "fla",
+      "EDM": "edm",
+      "CGY": "cgy",
+      "VAN": "van",
+      "SEA": "sea",
+      "BUF": "buf",
+      "PHI": "phi",
+      "CAR": "car",
+      "OTT": "ott",
+      "MIN": "min",
+      "WPG": "wpg",
+      "STL": "stl",
+      "ARI": "ari",
+      "ANA": "ana",
+      "TOR": "tor"
+    };
+
+    function getSlug(team) {
+      const code = (team || "").trim().toUpperCase();
+      return ESPN_SLUGS[code] || code.toLowerCase();
     }
 
-    function formatOdds(v) {
-      return v > 0 ? "+" + v : v;
-    }
+    /* --- formats --- */
+    function formatPercent(v) { return (v * 100).toFixed(1) + "%"; }
+    function formatOdds(v) { return v > 0 ? "+" + v : v; }
+    function normalizeBook(raw) { return (raw || "").toString().trim().toUpperCase(); }
 
-    // book helpers
-    function normalizeBook(raw) {
-      return (raw || "").toString().trim().toUpperCase();
-    }
+    /* ---- TAG HELPERS ---- */
+    function tagValue(m) { return (m.tag || "").trim().toUpperCase(); }
+    function isPlay(m) { return tagValue(m) === "PLAY"; }
+    function isLean(m) { return tagValue(m) === "LEAN"; }
 
+    /* ---- BOOK LOGO HELPERS ---- */
     function bookShortName(raw) {
       const name = normalizeBook(raw);
       if (name.includes("FANDUEL")) return "FD";
       if (name.includes("DRAFTKINGS")) return "DK";
       if (name.includes("ESPN")) return "ESPN";
-      if (name.includes("BETMGM") || name === "MGM") return "MGM";
-      if (name.includes("BET365") || name === "365") return "365";
+      if (name.includes("BETMGM")) return "MGM";
+      if (name.includes("BET365")) return "365";
       if (name.includes("CAESARS")) return "CZ";
       if (name.includes("HARD ROCK")) return "HR";
-      return name || "?";
+      return "?";
     }
 
     function bookClass(raw) {
@@ -444,114 +155,57 @@
       if (name.includes("FANDUEL")) return "book-fd";
       if (name.includes("DRAFTKINGS")) return "book-dk";
       if (name.includes("ESPN")) return "book-espn";
-      if (name.includes("BETMGM") || name === "MGM") return "book-mgm";
-      if (name.includes("BET365") || name === "365") return "book-365";
+      if (name.includes("BETMGM")) return "book-mgm";
+      if (name.includes("BET365")) return "book-365";
       if (name.includes("CAESARS")) return "book-caesars";
       return "";
     }
 
     function getBookLogoHtml(raw) {
-      const short = bookShortName(raw);
-      const cls = bookClass(raw);
-      return `<span class="book-logo ${cls}">${short}</span>`;
+      return `<span class="book-logo ${bookClass(raw)}">${bookShortName(raw)}</span>`;
     }
 
-    // TAG HELPERS
-    function tagValue(m) {
-      return (m.tag || "").toString().trim().toUpperCase();
-    }
-
-    function isPlay(m) {
-      return tagValue(m) === "PLAY";
-    }
-
-    function isLean(m) {
-      return tagValue(m) === "LEAN";
-    }
-
+    /* ---- RENDER ---- */
     function render() {
       gamesListEl.innerHTML = "";
       let any = false;
 
       games.forEach((g) => {
-        const allMarkets = Array.isArray(g.markets) ? g.markets : [];
+        const allMarkets = g.markets || [];
 
-        // Counts always from full set of markets
         const playCount = allMarkets.filter(isPlay).length;
         const leanCount = allMarkets.filter(isLean).length;
 
-        // Start filtering from a copy
         let markets = allMarkets.slice();
 
-        // Plays vs Plays & leans
-        if (viewMode === "plays") {
-          markets = markets.filter(isPlay);
-        }
-
-        // Book filter
+        if (viewMode === "plays") markets = markets.filter(isPlay);
         if (bookFilter !== "ALL") {
-          markets = markets.filter(
-            (m) => normalizeBook(m.book) === bookFilter
-          );
+          markets = markets.filter(m => normalizeBook(m.book) === bookFilter);
         }
 
-        // If no markets left after filters, hide the game
         if (markets.length === 0) return;
         any = true;
+
+        const awaySlug = getSlug(g.awayTeam);
+        const homeSlug = getSlug(g.homeTeam);
 
         const card = document.createElement("article");
         card.className = "game-card";
 
-        const header = document.createElement("header");
-        header.className = "game-header";
+        card.innerHTML = `
+          <header class="game-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${awaySlug}.png" />
+              <div class="game-title">${g.awayTeam}</div>
+              <div style="color:#64748b;font-size:12px;">@</div>
+              <div class="game-title">${g.homeTeam}</div>
+              <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${homeSlug}.png" />
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end;">
+              <span class="plays-summary">${playCount} Plays • ${leanCount} Leans</span>
+            </div>
+          </header>
 
-        const awayCode = (g.awayTeam || "").toLowerCase();
-        const homeCode = (g.homeTeam || "").toLowerCase();
-
-        header.innerHTML = `
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${awayCode}.png" />
-            <div class="game-title">${(awayCode || "").toUpperCase()}</div>
-            <div style="color:#64748b;font-size:12px;">@</div>
-            <div class="game-title">${(homeCode || "").toUpperCase()}</div>
-            <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${homeCode}.png" />
-          </div>
-
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
-            <span class="plays-summary">${playCount} Plays • ${leanCount} Leans</span>
-            <span class="game-meta">${g.gameTime || ""}</span>
-          </div>
-        `;
-
-        const tbodyRows = markets
-          .sort((a, b) => a.fgRank - b.fgRank)
-          .map((m) => {
-            const tagUpper = tagValue(m);
-            const tag =
-              tagUpper === "PLAY"
-                ? `<span class="tag-pill tag-play">PLAY</span>`
-                : tagUpper === "LEAN"
-                ? `<span class="tag-pill tag-lean">LEAN</span>`
-                : `<span class="tag-pill tag-pass">PASS</span>`;
-
-            const rowClass = tagUpper === "PLAY" ? "play-row" : "";
-            return `
-              <tr class="${rowClass}">
-                <td>${m.player}</td>
-                <td>${m.team || ""}</td>
-                <td class="align-right">${m.fgRank}</td>
-                <td class="align-right">${formatPercent(m.ev)}</td>
-                <td class="align-right">${formatOdds(m.bestOdds)}</td>
-                <td>${getBookLogoHtml(m.book)}</td>
-                <td class="align-right">${m.units ? m.units.toFixed(2) + "u" : ""}</td>
-                <td class="align-right">${Number(m.score || 0).toFixed(2)}</td>
-                <td>${tag}</td>
-              </tr>
-            `;
-          })
-          .join("");
-
-        const table = `
           <div class="table-wrapper">
             <table>
               <thead>
@@ -560,86 +214,65 @@
                   <th>Team</th>
                   <th class="align-right">FG Rank</th>
                   <th class="align-right">EV %</th>
-                  <th class="align-right">Best odds</th>
+                  <th class="align-right">Best Odds</th>
                   <th>Book</th>
                   <th class="align-right">Units</th>
                   <th class="align-right">Score</th>
                   <th>Tag</th>
                 </tr>
               </thead>
-              <tbody>${tbodyRows}</tbody>
+              <tbody>
+                ${markets.map(m => `
+                  <tr class="${isPlay(m) ? "play-row" : ""}">
+                    <td>${m.player}</td>
+                    <td>${m.team}</td>
+                    <td class="align-right">${m.fgRank}</td>
+                    <td class="align-right">${formatPercent(m.ev)}</td>
+                    <td class="align-right">${formatOdds(m.bestOdds)}</td>
+                    <td>${getBookLogoHtml(m.book)}</td>
+                    <td class="align-right">${m.units?.toFixed(2) ?? ""}u</td>
+                    <td class="align-right">${Number(m.score).toFixed(2)}</td>
+                    <td>${tagValue(m)}</td>
+                  </tr>`).join("")}
+              </tbody>
             </table>
           </div>
         `;
 
-        card.innerHTML = header.outerHTML + table;
         gamesListEl.appendChild(card);
       });
 
       if (!any) {
-        gamesListEl.innerHTML =
-          `<p class="text-muted">No markets match the current filters.</p>`;
+        gamesListEl.innerHTML = `<p class="text-muted">No markets match filters.</p>`;
       }
     }
 
+    /* ---- DATA ---- */
     async function loadData() {
-      try {
-        const res = await fetch(SHEET_API_URL);
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const json = await res.json();
-        console.log("Loaded JSON from web app:", json);
-
-        games = Array.isArray(json.games) ? json.games : [];
-        render();
-
-        // KPIs from Tracker
-        if (json.kpis) {
-          if (json.kpis.units != null) {
-            document.getElementById("kpi-units").textContent = json.kpis.units;
-          }
-          if (json.kpis.hitRate != null) {
-            document.getElementById("kpi-hit").textContent = json.kpis.hitRate;
-          }
-          if (json.kpis.avgEv != null) {
-            document.getElementById("kpi-ev").textContent = json.kpis.avgEv;
-          }
-        }
-      } catch (err) {
-        console.error("Error loading data:", err);
-        gamesListEl.innerHTML =
-          `<p class="text-muted">Could not load data from Sheets (fetch failed).</p>`;
-      }
+      const res = await fetch(SHEET_API_URL);
+      const json = await res.json();
+      games = json.games || [];
+      render();
     }
 
+    /* ---- INIT ---- */
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("today-date").textContent =
         new Date().toLocaleDateString();
 
-      const btnPlays = document.getElementById("btnPlays");
-      const btnPlaysLeans = document.getElementById("btnPlaysLeans");
-      const bookSelect = document.getElementById("bookSelect");
-
-      btnPlays.onclick = () => {
-        viewMode = "plays";
-        btnPlays.classList.add("active");
-        btnPlaysLeans.classList.remove("active");
-        render();
+      document.getElementById("btnPlays").onclick = () => {
+        viewMode = "plays"; render();
       };
-
-      btnPlaysLeans.onclick = () => {
-        viewMode = "playsLeans";
-        btnPlaysLeans.classList.add("active");
-        btnPlays.classList.remove("active");
-        render();
+      document.getElementById("btnPlaysLeans").onclick = () => {
+        viewMode = "playsLeans"; render();
       };
-
-      bookSelect.onchange = (e) => {
-        bookFilter = e.target.value.toUpperCase();
-        render();
+      document.getElementById("bookSelect").onchange = (e) => {
+        bookFilter = e.target.value.toUpperCase(); render();
       };
 
       loadData();
     });
   </script>
+
 </body>
 </html>
