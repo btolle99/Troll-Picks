@@ -30,79 +30,77 @@
       <section id="todayView" class="view">
         <!-- HERO + TRACKER -->
         <section class="hero">
-  <div class="hero-header">
-    <h1>Today&apos;s NHL First Goal Board</h1>
-    <p class="text-muted">
-      Model-driven first goal edges across books, game by game.
-    </p>
-  </div>
-
-  <!-- Pikkit-style tracker -->
-  <section class="summary-card">
-    <div class="summary-tabs">
-      <button class="summary-tab is-active">Today</button>
-      <button class="summary-tab">Week</button>
-      <button class="summary-tab">Month</button>
-      <button class="summary-tab">Year</button>
-    </div>
-    <p class="summary-headline">
-      You are
-      <span id="kpi-units" class="summary-number summary-number--up">
-        +0.0u
-      </span>,
-      hitting
-      <span id="kpi-hit" class="summary-number">0.0%</span>
-      of games with a
-      <span id="kpi-ev" class="summary-number">0.0%</span>
-      ROI.
-    </p>
-    <div class="summary-grid">
-      <div>
-        <div class="summary-label">All time P/L</div>
-        <div class="summary-value" id="kpi-units-bottom">+0.0u</div>
-      </div>
-      <div>
-        <div class="summary-label">Hit rate per game</div>
-        <div class="summary-value" id="kpi-hit-bottom">0.0%</div>
-      </div>
-      <div>
-        <div class="summary-label">ROI</div>
-        <div class="summary-value" id="kpi-ev-bottom">0.0%</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Date moved to bottom of hero -->
-  <p class="text-muted hero-subline hero-date">
-    Today • <span id="today-date"></span>
-  </p>
-</section>
-
-        </section>
-
-        <!-- FILTERS -->
-        <section class="filters">
-          <div class="segmented">
-            <button id="btnPlays" class="active">Plays</button>
-            <button id="btnPlaysLeans">Plays &amp; leans</button>
+          <div class="hero-header">
+            <h1>Today&apos;s NHL First Goal Board</h1>
+            <p class="text-muted">
+              Model-driven first goal edges across books, game by game.
+            </p>
           </div>
 
-          <div class="filter-row">
-            <span class="text-muted" style="font-size:11px;">Book</span>
-            <select class="pill-select" id="bookSelect">
-              <option value="ALL">All books</option>
-              <option value="FANDUEL">FanDuel</option>
-              <option value="DRAFTKINGS">DraftKings</option>
-              <option value="BETMGM">BetMGM</option>
-              <option value="ESPN BET">ESPN BET</option>
-              <option value="HARD ROCK BET">Hard Rock Bet</option>
-            </select>
-          </div>
-        </section>
+          <!-- Pikkit-style tracker -->
+          <section class="summary-card">
+            <div class="summary-tabs">
+              <button class="summary-tab is-active">Today</button>
+              <button class="summary-tab">Week</button>
+              <button class="summary-tab">Month</button>
+              <button class="summary-tab">Year</button>
+            </div>
+            <p class="summary-headline">
+              You are
+              <span id="kpi-units" class="summary-number summary-number--up">
+                +0.0u
+              </span>,
+              hitting
+              <span id="kpi-hit" class="summary-number">0.0%</span>
+              of games with a
+              <span id="kpi-ev" class="summary-number">0.0%</span>
+              ROI.
+            </p>
+            <div class="summary-grid">
+              <div>
+                <div class="summary-label">All time P/L</div>
+                <div class="summary-value" id="kpi-units-bottom">+0.0u</div>
+              </div>
+              <div>
+                <div class="summary-label">Hit rate per game</div>
+                <div class="summary-value" id="kpi-hit-bottom">0.0%</div>
+              </div>
+              <div>
+                <div class="summary-label">ROI</div>
+                <div class="summary-value" id="kpi-ev-bottom">0.0%</div>
+              </div>
+            </div>
+          </section>
 
-        <!-- GAMES LIST -->
-        <section class="games-list" id="gamesList"></section>
+          <!-- Date moved to bottom of hero -->
+          <p class="text-muted hero-subline hero-date">
+            Today • <span id="today-date"></span>
+          </p>
+        </section>
       </section>
+
+      <!-- FILTERS -->
+      <section class="filters">
+        <div class="segmented">
+          <button id="btnPlays" class="active">Plays</button>
+          <button id="btnPlaysLeans">Plays &amp; leans</button>
+        </div>
+
+        <div class="filter-row">
+          <span class="text-muted" style="font-size:11px;">Book</span>
+          <select class="pill-select" id="bookSelect">
+            <option value="ALL">All books</option>
+            <option value="FANDUEL">FanDuel</option>
+            <option value="DRAFTKINGS">DraftKings</option>
+            <option value="BETMGM">BetMGM</option>
+            <option value="ESPN BET">ESPN BET</option>
+            <option value="HARD ROCK BET">Hard Rock Bet</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- GAMES LIST -->
+      <section class="games-list" id="gamesList"></section>
 
       <!-- PERFORMANCE VIEW -->
       <section id="performanceView" class="view hidden">
@@ -166,6 +164,50 @@
         <p class="text-muted perf-footnote" id="perf-footnote">
           Performance excludes pending bets. Calendar tiles show daily net P/L.
         </p>
+
+        <!-- BET LOG -->
+        <section class="perf-log">
+          <div class="perf-log-header">
+            <div>
+              <h2>Bet log</h2>
+              <p class="text-muted">
+                Graded bets from the First Goal Engine.
+              </p>
+            </div>
+            <div class="perf-log-filters">
+              <select id="logResultFilter">
+                <option value="ALL">All results</option>
+                <option value="WIN">Wins</option>
+                <option value="LOSS">Losses</option>
+                <option value="PENDING">Pending</option>
+              </select>
+              <select id="logTagFilter">
+                <option value="ALL">All tags</option>
+                <option value="PLAYS">Plays only</option>
+                <option value="LEANS">Leans only</option>
+                <option value="NO_TAG">No tag</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrapper perf-log-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Game</th>
+                  <th>Player</th>
+                  <th class="align-right">Best odds</th>
+                  <th>Book</th>
+                  <th class="align-right">Units</th>
+                  <th>Result</th>
+                  <th class="align-right">P/L</th>
+                </tr>
+              </thead>
+              <tbody id="perf-log-body"></tbody>
+            </table>
+          </div>
+        </section>
       </section>
     </main>
   </div>
@@ -186,6 +228,9 @@
     let perfDaily = [];  // [{dateKey, date, pnl, wager, bets, wins}]
     let perfOverall = null;
     let perfRange = "month"; // "week" | "month" | "year"
+    let perfLog = [];
+    let logResultFilter = "ALL";
+    let logTagFilter = "ALL";
 
     // ------------ COMMON HELPERS ------------ //
     const ESPN_SLUGS = {
@@ -256,6 +301,10 @@
 
     function isLean(m) {
       return tagValue(m) === "LEAN";
+    }
+
+    function normalizeStatus(v) {
+      return (v || "").toString().trim().toUpperCase();
     }
 
     // Money parser: "$34.50", "-$10.00" or number
@@ -438,8 +487,7 @@
       let bets = 0;
 
       (logRows || []).forEach((row) => {
-        const status =
-          (row.status || row.STATUS || "").toString().trim().toUpperCase();
+        const status = normalizeStatus(row.status || row.STATUS);
         const dateKey =
           row.dateKey || row.DateKey || row.DATEKEY || row.Date || null;
         if (!dateKey) return;
@@ -503,6 +551,84 @@
       }
 
       return perfDaily.filter((d) => d.date.getTime() >= cutoff);
+    }
+
+    // ------------ PERFORMANCE BET LOG ------------ //
+    function renderBetLog() {
+      const body = document.getElementById("perf-log-body");
+      if (!body) return;
+
+      if (!Array.isArray(perfLog) || !perfLog.length) {
+        body.innerHTML = "";
+        return;
+      }
+
+      const filtered = perfLog.filter((row) => {
+        const status = normalizeStatus(row.status || row.STATUS);
+        const tag = tagValue(row);
+
+        if (logResultFilter !== "ALL" && status !== logResultFilter) {
+          return false;
+        }
+
+        if (logTagFilter === "PLAYS" && !isPlay(row)) return false;
+        if (logTagFilter === "LEANS" && !isLean(row)) return false;
+        if (logTagFilter === "NO_TAG" && (isPlay(row) || isLean(row))) return false;
+
+        return true;
+      });
+
+      // show most recent bets first, cap at 200 rows
+      const rows = filtered.slice(-200).reverse();
+
+      body.innerHTML = rows
+        .map((row) => {
+          const dateKey =
+            row.dateKey || row.DateKey || row.DATEKEY || row.Date || "";
+          const away = (row.Away || row.awayTeam || "").toString().toUpperCase();
+          const home = (row.Home || row.homeTeam || "").toString().toUpperCase();
+          const game = away && home ? `${away} @ ${home}` : (row.Game || "");
+          const player = row.Player || row.player || "";
+
+          const bestOddsRaw =
+            row.BestOdds || row["Best odds"] || row.bestOdds || row.best_odds;
+          const bestOdds = formatOdds(bestOddsRaw);
+
+          const bookRaw =
+            row.BestBook || row.Book || row.book || row.bestBook || "";
+          const bookHtml = getBookLogoHtml(bookRaw);
+
+          const unitsVal =
+            row.Units != null ? Number(row.Units) :
+            (row.units != null ? Number(row.units) : null);
+          const unitsLabel = unitsVal != null && !isNaN(unitsVal)
+            ? unitsVal.toFixed(2) + "u"
+            : "";
+
+          const status = normalizeStatus(row.status || row.STATUS);
+          const plNum = parseMoney(row["P/L"] || row.pl || row.profit);
+          const plLabel = (plNum >= 0 ? "+" : "") + plNum.toFixed(2);
+
+          const statusClass =
+            status === "WIN" ? "log-status-win"
+            : status === "LOSS" ? "log-status-loss"
+            : status === "PENDING" ? "log-status-pending"
+            : "log-status-other";
+
+          return `
+            <tr>
+              <td>${dateKey}</td>
+              <td>${game}</td>
+              <td>${player}</td>
+              <td class="align-right">${bestOdds}</td>
+              <td>${bookHtml}</td>
+              <td class="align-right">${unitsLabel}</td>
+              <td><span class="log-status ${statusClass}">${status || "-"}</span></td>
+              <td class="align-right">${plLabel}</td>
+            </tr>
+          `;
+        })
+        .join("");
     }
 
     // ------------ PERFORMANCE RENDERING ------------ //
@@ -735,8 +861,10 @@
 
         // Performance log from FG Model Log
         if (Array.isArray(json.log)) {
+          perfLog = json.log;
           computePerformance(json.log);
           renderPerformance();
+          renderBetLog();
         } else {
           // If log isn't wired up yet, just show placeholder
           document.getElementById("perf-calendar").innerHTML =
@@ -811,6 +939,24 @@
           renderPerformance();
         });
       });
+
+      // Bet log filters
+      const resFilter = document.getElementById("logResultFilter");
+      const tagFilter = document.getElementById("logTagFilter");
+
+      if (resFilter) {
+        resFilter.addEventListener("change", (e) => {
+          logResultFilter = e.target.value;
+          renderBetLog();
+        });
+      }
+
+      if (tagFilter) {
+        tagFilter.addEventListener("change", (e) => {
+          logTagFilter = e.target.value;
+          renderBetLog();
+        });
+      }
 
       loadData();
     });
