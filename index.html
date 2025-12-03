@@ -30,49 +30,54 @@
       <section id="todayView" class="view">
         <!-- HERO + TRACKER -->
         <section class="hero">
-          <div class="hero-header">
-            <h1>Today&apos;s NHL First Goal Board</h1>
-            <p class="text-muted">
-              Model-driven first goal edges across books, game by game.
-            </p>
-            <p class="text-muted hero-subline">
-              Today • <span id="today-date"></span>
-            </p>
-          </div>
+  <div class="hero-header">
+    <h1>Today&apos;s NHL First Goal Board</h1>
+    <p class="text-muted">
+      Model-driven first goal edges across books, game by game.
+    </p>
+  </div>
 
-          <!-- Pikkit-style tracker -->
-          <section class="summary-card">
-            <div class="summary-tabs">
-              <button class="summary-tab is-active">Today</button>
-              <button class="summary-tab">Odds</button>
-              <button class="summary-tab">Performance</button>
-            </div>
-            <p class="summary-headline">
-              You are
-              <span id="kpi-units" class="summary-number summary-number--up">
-                +0.0u
-              </span>,
-              hitting
-              <span id="kpi-hit" class="summary-number">0.0%</span>
-              of games with a
-              <span id="kpi-ev" class="summary-number">0.0%</span>
-              ROI.
-            </p>
-            <div class="summary-grid">
-              <div>
-                <div class="summary-label">All time P/L</div>
-                <div class="summary-value" id="kpi-units-bottom">+0.0u</div>
-              </div>
-              <div>
-                <div class="summary-label">Hit rate per game</div>
-                <div class="summary-value" id="kpi-hit-bottom">0.0%</div>
-              </div>
-              <div>
-                <div class="summary-label">ROI</div>
-                <div class="summary-value" id="kpi-ev-bottom">0.0%</div>
-              </div>
-            </div>
-          </section>
+  <!-- Pikkit-style tracker -->
+  <section class="summary-card">
+    <div class="summary-tabs">
+      <button class="summary-tab is-active">Today</button>
+      <button class="summary-tab">Week</button>
+      <button class="summary-tab">Month</button>
+      <button class="summary-tab">Year</button>
+    </div>
+    <p class="summary-headline">
+      You are
+      <span id="kpi-units" class="summary-number summary-number--up">
+        +0.0u
+      </span>,
+      hitting
+      <span id="kpi-hit" class="summary-number">0.0%</span>
+      of games with a
+      <span id="kpi-ev" class="summary-number">0.0%</span>
+      ROI.
+    </p>
+    <div class="summary-grid">
+      <div>
+        <div class="summary-label">All time P/L</div>
+        <div class="summary-value" id="kpi-units-bottom">+0.0u</div>
+      </div>
+      <div>
+        <div class="summary-label">Hit rate per game</div>
+        <div class="summary-value" id="kpi-hit-bottom">0.0%</div>
+      </div>
+      <div>
+        <div class="summary-label">ROI</div>
+        <div class="summary-value" id="kpi-ev-bottom">0.0%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Date moved to bottom of hero -->
+  <p class="text-muted hero-subline hero-date">
+    Today • <span id="today-date"></span>
+  </p>
+</section>
+
         </section>
 
         <!-- FILTERS -->
