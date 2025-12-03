@@ -36,6 +36,7 @@ body {
     #f8fafc 100%
   );
   color: var(--text-main);
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .shell {
@@ -122,7 +123,7 @@ header {
 }
 
 /* ---------------------------
-   MAIN / HERO / KPIs
+   MAIN / HERO / TRACKER
 ---------------------------- */
 main {
   flex: 1;
@@ -146,7 +147,7 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .hero-compact {
@@ -157,32 +158,74 @@ h1 {
   font-size: 13px;
 }
 
-/* KPIs */
-.kpis {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.kpi-card {
+/* Pikkit-style summary card */
+.summary-card {
   background: var(--card-bg);
+  border-radius: 20px;
+  padding: 16px 18px 14px;
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 12px 14px;
-  box-shadow: 0 8px 20px rgba(148, 163, 184, 0.22);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.1);
 }
 
-.kpi-label {
+.summary-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  margin-bottom: 10px;
+}
+
+.summary-tab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 6px 0;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.summary-tab.is-active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.2);
+}
+
+.summary-headline {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.summary-number {
+  font-weight: 600;
+}
+
+.summary-number--up {
+  color: #16a34a;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.summary-label {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--text-muted);
 }
 
-.kpi-value {
-  font-size: 18px;
+.summary-value {
+  font-size: 14px;
   font-weight: 600;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 /* ---------------------------
@@ -238,26 +281,45 @@ h1 {
 }
 
 /* ---------------------------
-   GAME CARDS
+   GAME CARDS (COLLAPSIBLE)
 ---------------------------- */
 .games-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .game-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 14px;
-  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
 }
 
-.game-header {
+/* clickable header */
+.game-card__header {
+  width: 100%;
+  border: none;
+  background: #f8fafc;
+  padding: 10px 14px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.game-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.game-card__header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .team-logo {
@@ -271,16 +333,60 @@ h1 {
   font-weight: 600;
 }
 
+.game-at {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.game-card__teams {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
 .plays-summary {
   font-size: 11px;
   color: var(--text-muted);
+}
+
+/* chevron */
+.game-card__chevron {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  position: relative;
+}
+
+.game-card__chevron::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(45deg); /* down */
+}
+
+.game-card.is-open .game-card__chevron::before {
+  transform: rotate(-135deg); /* up */
+}
+
+/* body */
+.game-card__body {
+  padding: 6px 14px 12px;
+  border-top: 1px solid var(--border);
+  display: none;
+}
+
+.game-card.is-open .game-card__body {
+  display: block;
 }
 
 /* ---------------------------
    TABLE
 ---------------------------- */
 .table-wrapper {
-  margin-top: 10px;
+  margin-top: 4px;
   overflow-x: auto;
 }
 
@@ -288,6 +394,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 11px;
+  min-width: 560px;
 }
 
 th {
@@ -516,7 +623,27 @@ tbody tr {
 }
 
 @media (max-width: 720px) {
-  .kpis,
+  main {
+    padding: 20px 12px 32px;
+  }
+
+  .summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .filters {
+    padding: 10px 10px;
+  }
+
+  .game-card__header {
+    padding: 8px 10px;
+  }
+
+  .game-card__body {
+    padding: 4px 10px 10px;
+  }
+
   .perf-kpis {
     grid-template-columns: minmax(0, 1fr);
   }
