@@ -28,9 +28,9 @@
     <main>
       <!-- TODAY VIEW -->
       <section id="todayView" class="view">
-        <!-- HERO -->
+        <!-- HERO + TRACKER -->
         <section class="hero">
-          <div>
+          <div class="hero-header">
             <h1>Today&apos;s NHL First Goal Board</h1>
             <p class="text-muted">
               Model-driven first goal edges across books, game by game.
@@ -40,20 +40,39 @@
             </p>
           </div>
 
-          <div class="kpis">
-            <div class="kpi-card">
-              <div class="kpi-label">All time P/L</div>
-              <div class="kpi-value"><span id="kpi-units">+0.0u</span></div>
+          <!-- Pikkit-style tracker -->
+          <section class="summary-card">
+            <div class="summary-tabs">
+              <button class="summary-tab is-active">Today</button>
+              <button class="summary-tab">Odds</button>
+              <button class="summary-tab">Performance</button>
             </div>
-            <div class="kpi-card">
-              <div class="kpi-label">Hit rate per game</div>
-              <div class="kpi-value"><span id="kpi-hit">0.0%</span></div>
+            <p class="summary-headline">
+              You are
+              <span id="kpi-units" class="summary-number summary-number--up">
+                +0.0u
+              </span>,
+              hitting
+              <span id="kpi-hit" class="summary-number">0.0%</span>
+              of games with a
+              <span id="kpi-ev" class="summary-number">0.0%</span>
+              ROI.
+            </p>
+            <div class="summary-grid">
+              <div>
+                <div class="summary-label">All time P/L</div>
+                <div class="summary-value" id="kpi-units-bottom">+0.0u</div>
+              </div>
+              <div>
+                <div class="summary-label">Hit rate per game</div>
+                <div class="summary-value" id="kpi-hit-bottom">0.0%</div>
+              </div>
+              <div>
+                <div class="summary-label">ROI</div>
+                <div class="summary-value" id="kpi-ev-bottom">0.0%</div>
+              </div>
             </div>
-            <div class="kpi-card">
-              <div class="kpi-label">ROI</div>
-              <div class="kpi-value"><span id="kpi-ev">0.0%</span></div>
-            </div>
-          </div>
+          </section>
         </section>
 
         <!-- FILTERS -->
@@ -274,9 +293,21 @@
     }
 
     // ------------ TODAY RENDERING ------------ //
+    function attachCollapseHandlers() {
+      const headers = gamesListEl.querySelectorAll(".game-card__header");
+      headers.forEach((header) => {
+        header.addEventListener("click", () => {
+          const card = header.closest(".game-card");
+          if (!card) return;
+          card.classList.toggle("is-open");
+        });
+      });
+    }
+
     function renderToday() {
       gamesListEl.innerHTML = "";
       let any = false;
+      const isDesktop = window.innerWidth >= 768;
 
       games.forEach((g) => {
         const allMarkets = Array.isArray(g.markets) ? g.markets : [];
@@ -303,75 +334,80 @@
         const homeSlug = getSlug(g.homeTeam);
 
         const card = document.createElement("article");
-        card.className = "game-card";
+        card.className = "game-card" + (isDesktop ? " is-open" : "");
 
         card.innerHTML = `
-          <header class="game-header">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${awaySlug}.png" />
-              <div class="game-title">${(g.awayTeam || "").toUpperCase()}</div>
-              <div style="color:#64748b;font-size:12px;">@</div>
-              <div class="game-title">${(g.homeTeam || "").toUpperCase()}</div>
-              <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${homeSlug}.png" />
+          <button class="game-card__header" type="button">
+            <div class="game-card__header-left">
+              <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${awaySlug}.png" alt="${g.awayTeam || ""}" />
+              <div class="game-card__teams">
+                <span class="game-title">${(g.awayTeam || "").toUpperCase()}</span>
+                <span class="game-at">@</span>
+                <span class="game-title">${(g.homeTeam || "").toUpperCase()}</span>
+              </div>
+              <img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nhl/500/${homeSlug}.png" alt="${g.homeTeam || ""}" />
             </div>
-            <div style="display:flex; flex-direction:column; align-items:flex-end;">
+            <div class="game-card__header-right">
               <span class="plays-summary">${playCount} Plays • ${leanCount} Leans</span>
+              <span class="game-card__chevron" aria-hidden="true"></span>
             </div>
-          </header>
+          </button>
 
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Player</th>
-                  <th>Team</th>
-                  <th class="align-right">FG Rank</th>
-                  <th class="align-right">EV %</th>
-                  <th class="align-right">Best odds</th>
-                  <th>Book</th>
-                  <th class="align-right">Units</th>
-                  <th class="align-right">Score</th>
-                  <th>Tag</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${markets
-                  .sort((a, b) => (a.fgRank || 9999) - (b.fgRank || 9999))
-                  .map((m) => {
-                    const tag = tagValue(m);
-                    let tagHtml = '<span class="tag-pill tag-pass">PASS</span>';
-                    if (tag === "PLAY") {
-                      tagHtml = '<span class="tag-pill tag-play">PLAY</span>';
-                    } else if (tag === "LEAN") {
-                      tagHtml = '<span class="tag-pill tag-lean">LEAN</span>';
-                    }
+          <div class="game-card__body">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Player</th>
+                    <th>Team</th>
+                    <th class="align-right">FG Rank</th>
+                    <th class="align-right">EV %</th>
+                    <th class="align-right">Best odds</th>
+                    <th>Book</th>
+                    <th class="align-right">Units</th>
+                    <th class="align-right">Score</th>
+                    <th>Tag</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${markets
+                    .sort((a, b) => (a.fgRank || 9999) - (b.fgRank || 9999))
+                    .map((m) => {
+                      const tag = tagValue(m);
+                      let tagHtml = '<span class="tag-pill tag-pass">PASS</span>';
+                      if (tag === "PLAY") {
+                        tagHtml = '<span class="tag-pill tag-play">PLAY</span>';
+                      } else if (tag === "LEAN") {
+                        tagHtml = '<span class="tag-pill tag-lean">LEAN</span>';
+                      }
 
-                    const scoreNum =
-                      m.score === undefined || m.score === null
-                        ? 0
-                        : Number(m.score);
-                    const unitsNum =
-                      m.units === undefined || m.units === null
-                        ? 0
-                        : Number(m.units);
+                      const scoreNum =
+                        m.score === undefined || m.score === null
+                          ? 0
+                          : Number(m.score);
+                      const unitsNum =
+                        m.units === undefined || m.units === null
+                          ? 0
+                          : Number(m.units);
 
-                    return `
-                      <tr class="${isPlay(m) ? "play-row" : ""}">
-                        <td>${m.player || ""}</td>
-                        <td>${m.team || ""}</td>
-                        <td class="align-right">${m.fgRank || ""}</td>
-                        <td class="align-right">${formatPercent(m.ev)}</td>
-                        <td class="align-right">${formatOdds(m.bestOdds)}</td>
-                        <td>${getBookLogoHtml(m.book)}</td>
-                        <td class="align-right">${unitsNum ? unitsNum.toFixed(2) + "u" : ""}</td>
-                        <td class="align-right">${scoreNum.toFixed(2)}</td>
-                        <td>${tagHtml}</td>
-                      </tr>
-                    `;
-                  })
-                  .join("")}
-              </tbody>
-            </table>
+                      return `
+                        <tr class="${isPlay(m) ? "play-row" : ""}">
+                          <td>${m.player || ""}</td>
+                          <td>${m.team || ""}</td>
+                          <td class="align-right">${m.fgRank || ""}</td>
+                          <td class="align-right">${formatPercent(m.ev)}</td>
+                          <td class="align-right">${formatOdds(m.bestOdds)}</td>
+                          <td>${getBookLogoHtml(m.book)}</td>
+                          <td class="align-right">${unitsNum ? unitsNum.toFixed(2) + "u" : ""}</td>
+                          <td class="align-right">${scoreNum.toFixed(2)}</td>
+                          <td>${tagHtml}</td>
+                        </tr>
+                      `;
+                    })
+                    .join("")}
+                </tbody>
+              </table>
+            </div>
           </div>
         `;
 
@@ -382,6 +418,8 @@
         gamesListEl.innerHTML =
           '<p class="text-muted">No markets match the current filters.</p>';
       }
+
+      attachCollapseHandlers();
     }
 
     // ------------ PERFORMANCE COMPUTE ------------ //
@@ -494,7 +532,6 @@
         rangeWins += d.wins;
         rangeLosses += d.bets - d.wins; // no pushes tracked per-day
       });
-      // pushes only available overall
       const totalBets = rows.reduce((sum, d) => sum + d.bets, 0);
       const rangeRoi = rangeWager ? rangeProfit / rangeWager : 0;
 
@@ -675,16 +712,19 @@
         // Today KPIs from Tracker
         if (json.kpis) {
           if (json.kpis.units != null) {
-            document.getElementById("kpi-units").textContent =
-              json.kpis.units;
+            const v = json.kpis.units;
+            document.getElementById("kpi-units").textContent = v;
+            document.getElementById("kpi-units-bottom").textContent = v;
           }
           if (json.kpis.hitRate != null) {
-            document.getElementById("kpi-hit").textContent =
-              json.kpis.hitRate;
+            const v = json.kpis.hitRate;
+            document.getElementById("kpi-hit").textContent = v;
+            document.getElementById("kpi-hit-bottom").textContent = v;
           }
           if (json.kpis.avgEv != null) {
-            document.getElementById("kpi-ev").textContent =
-              json.kpis.avgEv;
+            const v = json.kpis.avgEv;
+            document.getElementById("kpi-ev").textContent = v;
+            document.getElementById("kpi-ev-bottom").textContent = v;
           }
         }
 
